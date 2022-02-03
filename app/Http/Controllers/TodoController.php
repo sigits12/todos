@@ -9,6 +9,20 @@ use Validator;
 
 class TodoController extends Controller
 {
+
+    public function index(Request $request)
+    {
+        $todos = Todo::byUser()->get();
+
+        $response = [
+            'data' => $todos,
+            'message' => 'success',
+        ];
+
+        return response()
+            ->json($response, 200);
+    }
+
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
