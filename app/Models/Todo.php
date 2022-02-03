@@ -14,7 +14,7 @@ class Todo extends Model
     protected $primaryKey = 'id';
 
     protected $fillable = [
-        'title', 'description', 'status', 'user_id'
+        'title', 'description', 'status', 'user_id', 'start', 'end'
     ];
 
     public function user()

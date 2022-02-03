@@ -9,6 +9,8 @@ use Tests\TestCase;
 
 class TodoTest extends TestCase
 {
+    use RefreshDatabase;
+    
     protected function getToken()
     {
         $data = [
@@ -25,7 +27,7 @@ class TodoTest extends TestCase
         $this->post(route('register'), $data);
 
         $response = $this->post(route('login'), ['email' => $data['email'], 'password' => $data['password']]);
-        
+
         return $response['access_token'];
     }
 
@@ -35,7 +37,8 @@ class TodoTest extends TestCase
         $data = [
             'title' => 'Bertemu teman',
             'description' => 'Di tempat futsal biasa, membawa tas yang hijau',
-            'status' => '1'
+            'start' => '2022-02-05 09:30:34',
+            'end' => '2022-02-05 11:30:34',
         ];
 
         $token = $this->getToken();
@@ -48,7 +51,36 @@ class TodoTest extends TestCase
         $response->assertStatus(201);
         $response->assertJsonStructure([
             'data' => [
-                'name',
+                'title',
+                'description',
+                'status',
+                'user_id',
+            ],
+            'message',
+        ]);
+    }
+
+    // /** @test */
+    public function index()
+    {
+        $data = [
+            'title' => 'Bertemu teman',
+            'description' => 'Di tempat futsal biasa, membawa tas yang hijau',
+            'status' => '1',
+            'user_id' => '1'
+        ];
+
+        $token = $this->getToken();
+
+        $response = $this->withHeaders([
+            'Accept' => 'application/json',
+            'Authorization' => 'Bearer ' . $token,
+        ])->post(route('todos.store'), $data);
+
+        $response->assertStatus(201);
+        $response->assertJsonStructure([
+            'data' => [
+                'title',
                 'description',
                 'status',
                 'user_id',

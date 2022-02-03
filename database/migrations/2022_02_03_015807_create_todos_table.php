@@ -17,7 +17,9 @@ class CreateTodosTable extends Migration
             $table->id();
             $table->text('title');
             $table->text('description')->nullable();
-            $table->tinyInteger('status')->default('2');
+            $table->dateTime('start');
+            $table->dateTime('end');
+            $table->string('status')->default('inactive');
 
             $table->unsignedInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('SET NULL');
