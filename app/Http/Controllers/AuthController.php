@@ -31,15 +31,15 @@ class AuthController extends Controller
         $token = $user->createToken('auth_token')->plainTextToken;
 
         $response = [
-            'name' => $user->name,
-            'email' => $user->email,
-        ];
-
-        return response()->json([
-            'data' => $response,
+            'data' => [
+                'name' => $user->name,
+                'email' => $user->email,
+            ],
             'access_token' => $token,
             'token_type' => 'Bearer',
-        ], 201);
+        ];
+
+        return response()->json($response, 201);
     }
 
     public function login(Request $request)
@@ -54,14 +54,14 @@ class AuthController extends Controller
         $token = $user->createToken('auth_token')->plainTextToken;
 
         $response = [
-            'name' => $user->name,
-            'email' => $user->email,
-        ];
-
-        return response()->json([
-            'data' => $response,
+            'data' => [
+                'name' => $user->name,
+                'email' => $user->email,
+            ],
             'access_token' => $token,
             'token_type' => 'Bearer',
-        ], 200);
+        ];
+
+        return response()->json($response, 200);
     }
 }

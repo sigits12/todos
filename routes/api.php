@@ -18,6 +18,8 @@ Route::post('/register', [App\Http\Controllers\AuthController::class, 'register'
 
 Route::post('/login', [App\Http\Controllers\AuthController::class, 'login'])->name('login');
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::group(['middleware' => 'auth:sanctum'], function () {
+
+    Route::resource('todos', App\Http\Controllers\TodoController::class);
+
 });

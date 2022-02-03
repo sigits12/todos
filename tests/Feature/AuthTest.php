@@ -4,13 +4,11 @@ namespace Tests\Feature;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class AuthTest extends TestCase
 {
-
-    use RefreshDatabase;
+    // use RefreshDatabase;
 
     protected function deleteUser($data)
     {
@@ -66,6 +64,5 @@ class AuthTest extends TestCase
             'access_token',
             'token_type'
         ]);
-
     }
 }
