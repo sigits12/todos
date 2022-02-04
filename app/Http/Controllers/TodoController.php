@@ -121,7 +121,42 @@ class TodoController extends Controller
                 'status' => $todo->status,
                 'user_id' => $todo->user_id,
             ],
-            'message' => 'Update Success',
+            'message' => 'Update Data Success',
+        ];
+
+        return response()
+            ->json($response, 200);
+    }
+
+    public function updateStatus(Request $request, $todo)
+    {
+        $validator = Validator::make($request->all(), [
+            'status' => [
+                Rule::in(['inactive', 'active', 'completed']),
+            ],
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors());
+        }
+
+        try {
+            $todo = Todo::findOrFail($todo);
+        } catch (ModelNotFoundException $e) {
+            return $this->notFound();
+        }
+
+        $todo->status = $request->status;
+        $todo->save();
+
+        $response = [
+            'data' => [
+                'title' => $todo->title,
+                'description' => $todo->description,
+                'status' => $todo->status,
+                'user_id' => $todo->user_id,
+            ],
+            'message' => 'Update Status Success',
         ];
 
         return response()

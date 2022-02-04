@@ -22,4 +22,6 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
     Route::resource('todos', App\Http\Controllers\TodoController::class);
 
+    Route::patch('todos/updatestatus/{todo}', [App\Http\Controllers\TodoController::class, 'updateStatus'])->name('todos.updatestatus');
+
 });
