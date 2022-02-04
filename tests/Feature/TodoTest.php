@@ -157,4 +157,39 @@ class TodoTest extends TestCase
 
         $this->assertCount(1, $response->json(['data']));
     }
+
+    /** @test */
+    public function update()
+    {
+        $data = [
+            'title' => 'Bertemu teman',
+            'description' => 'Di tempat futsal biasa, membawa tas yang hijau',
+            'start' => '2022-02-04 06:30:34',
+            'end' => '2022-02-04 11:30:34',
+            'user_id' => '1',
+            'status' => 'active',
+        ];
+
+        $user = $this->bulkRegister()[0];
+
+        $token = $this->getToken($user);
+
+        $todo = Todo::create($data);
+
+        $new = [
+            'title' => 'Bertemu teman sekolah',
+        ];
+
+        $response = $this->withHeaders([
+            'Accept' => 'application/json',
+            'Authorization' => 'Bearer ' . $token,
+        ])->patch(route('todos.update',  ['todo' => $todo->id]), $new);
+        
+        $response->assertStatus(200)
+            ->assertJson([
+                'data' => [
+                    'title' => $new['title']
+                ],
+            ]);
+    }
 }
