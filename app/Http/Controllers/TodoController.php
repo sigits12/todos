@@ -162,4 +162,21 @@ class TodoController extends Controller
         return response()
             ->json($response, 200);
     }
+
+    public function destroy($todo)
+    {
+        try {
+            $todo = Todo::findOrFail($todo);
+        } catch (ModelNotFoundException $e) {
+            return $this->notFound();
+        }
+        $todo->delete();
+
+        $response = [
+            'message' => 'Deleted Success',
+        ];
+
+        return response()
+            ->json($response, 200);
+    }
 }

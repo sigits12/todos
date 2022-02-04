@@ -229,4 +229,30 @@ class TodoTest extends TestCase
                 ],
             ]);
     }
+
+    /** @test */
+    public function destroy()
+    {
+        $data = [
+            'title' => 'Bertemu teman',
+            'description' => 'Di tempat futsal biasa, membawa tas yang hijau',
+            'start' => '2022-02-04 06:30:34',
+            'end' => '2022-02-04 11:30:34',
+            'user_id' => '1',
+            'status' => 'active',
+        ];
+
+        $user = $this->bulkRegister()[0];
+
+        $token = $this->getToken($user);
+
+        $todo = Todo::create($data);
+
+        $response = $this->withHeaders([
+            'Accept' => 'application/json',
+            'Authorization' => 'Bearer ' . $token,
+        ])->delete(route('todos.destroy',  ['todo' => $todo->id]));
+
+        $this->assertCount(0, Todo::byUser()->get());
+    }
 }
