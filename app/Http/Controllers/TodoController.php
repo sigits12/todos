@@ -5,14 +5,27 @@ namespace App\Http\Controllers;
 use App\Models\Todo;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Validator;
+use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Validator;
 
 class TodoController extends Controller
 {
 
     public function index(Request $request)
     {
-        $todos = Todo::byUser()->get();
+        $validator = Validator::make($request->all(), [
+            'status' => [
+                Rule::in(['inactive', 'active', 'completed']),
+            ],
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors());
+        }
+
+        $todos = Todo::byUser()->when($request->has('status'), function ($query) use ($request) {
+            $query->where('status', 'LIKE', '%' . $request->status . '%');
+        })->get();
 
         $response = [
             'data' => $todos,
@@ -41,7 +54,6 @@ class TodoController extends Controller
         } else {
             if (request('end') < Carbon::now()) {
                 $request['status'] = 'completed';
-
             } else {
                 $request['status'] = 'active';
             }

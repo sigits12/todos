@@ -3,9 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Todo;
-use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class TodoTest extends TestCase
@@ -73,7 +71,7 @@ class TodoTest extends TestCase
     }
 
     /** @test */
-    public function index()
+    public function index_with_filter_by_user()
     {
         $data = [
             [
@@ -114,5 +112,49 @@ class TodoTest extends TestCase
         ])->get(route('todos.index'));
 
         $this->assertCount(2, $response->json(['data']));
+    }
+
+    /** @test */
+    public function index_with_filter_by_status()
+    {
+        $data = [
+            [
+                'title' => 'Bertemu teman',
+                'description' => 'Di tempat futsal biasa, membawa tas yang hijau',
+                'start' => '2022-02-04 06:30:34',
+                'end' => '2022-02-04 11:30:34',
+                'user_id' => '1',
+                'status' => 'active',
+            ],
+            [
+                'title' => 'Bertemu teman',
+                'description' => 'Di tempat futsal biasa, membawa tas yang hijau',
+                'start' => '2022-02-02 09:30:34',
+                'end' => '2022-02-02 11:30:34',
+                'user_id' => '1',
+                'status' => 'completed',
+            ],
+            [
+                'title' => 'Bertemu teman',
+                'description' => 'Di tempat futsal biasa, membawa tas yang hijau',
+                'start' => '2022-02-05 09:30:34',
+                'end' => '2022-02-05 11:30:34',
+                'user_id' => '2',
+                'status' => 'inactive',
+            ]
+        ];
+
+        $user = $this->bulkRegister()[0];
+
+        $token = $this->getToken($user);
+
+        Todo::insert($data);
+
+        $response = $this->withHeaders([
+            'Accept' => 'application/json',
+            'Authorization' => 'Bearer ' . $token,
+        ])->get(route('todos.index',  ['status' => 'completed']));
+
+        $this->assertCount(1, $response->json(['data']));
     }
 }
